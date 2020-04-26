@@ -6,6 +6,9 @@ Created on Sat Apr 25 15:58:01 2020
 @author: miguel
 """
 import math
+from pylab import figure, text
+import matplotlib.pyplot as plt
+import matplotlib.colors
 
 def probDice(number):
     if number==2:
@@ -34,8 +37,7 @@ def probDice(number):
         prob=0
     return prob
 
-def printHex(tile,lenGrid,h):
-    lenGrid=0.5
+def printHex(tile,lenGrid):
     h=lenGrid/math.cos(math.radians(30))
     coord1=[tile[1]['coord'][0]+lenGrid,tile[1]['coord'][1]+h*math.sin(math.radians(30))]
     coord2=[tile[1]['coord'][0],tile[1]['coord'][1]+lenGrid]
@@ -49,3 +51,61 @@ def printHex(tile,lenGrid,h):
     coordX=[tile[1]['coord'][0]+lenGrid,tile[1]['coord'][0],tile[1]['coord'][0]-lenGrid,tile[1]['coord'][0]-lenGrid,tile[1]['coord'][0],tile[1]['coord'][0]+lenGrid,tile[1]['coord'][0]+lenGrid]
     coordY=[tile[1]['coord'][1]+h*math.sin(math.radians(30)),tile[1]['coord'][1]+lenGrid,tile[1]['coord'][1]+h*math.sin(math.radians(30)),tile[1]['coord'][1]-h*math.sin(math.radians(30)),tile[1]['coord'][1]-lenGrid,tile[1]['coord'][1]-h*math.sin(math.radians(30)),tile[1]['coord'][1]+h*math.sin(math.radians(30))]
     return [coordX,coordY,node_coord]
+
+def plotID(tiles,ports,nodes,lenGrid):
+    for tile in tiles.iterrows():
+        text(tile[1]['coord'][0]-0.05,tile[1]['coord'][1]-0.05, tile[1]['id'],size=10, bbox=dict(facecolor='black', alpha=0.2))
+        [coordX,coordY,node_coord]=printHex(tile,lenGrid)
+        plt.plot(coordX,coordY,color='k')
+        for i in range(6):
+            text(tile[1]['node_coord'][i][0]-0.05,tile[1]['node_coord'][i][1]-0.05, tile[1]['node_name'][i],size=8, bbox=dict(facecolor='white', alpha=1))
+    
+    for port in ports.iterrows():
+        plt.scatter(port[1]['coord'][0],port[1]['coord'][1],color=port[1]['col'],s=100) 
+        for i in range(2):
+            plt.plot([port[1]['coord'][0],nodes['coordX'][port[1]['nodes'][i]]],[port[1]['coord'][1],nodes['coordY'][port[1]['nodes'][i]]],color=port[1]['col'])
+    
+    plt.show()
+    
+def plotMap(tiles,ports,nodes,lenGrid):
+    for tile in tiles.iterrows():
+        text_params = {'ha': 'center', 'va': 'center', 'family': 'sans-serif','fontweight': 'bold'}
+        text(tile[1]['coord'][0]-0.05,tile[1]['coord'][1]-0.05, tile[1]['num'],color=tile[1]['col'],size=13,**text_params)
+        [coordX,coordY,node_coord]=printHex(tile,lenGrid)
+        plt.plot(coordX,coordY,color='k')
+        
+    for port in ports.iterrows():
+        plt.scatter(port[1]['coord'][0],port[1]['coord'][1],color=port[1]['col'],s=100) 
+        for i in range(2):
+            plt.plot([port[1]['coord'][0],nodes['coordX'][port[1]['nodes'][i]]],[port[1]['coord'][1],nodes['coordY'][port[1]['nodes'][i]]],color=port[1]['col'])
+    
+    plt.show()
+    
+def plotNodeProb(tiles,ports,nodes,lenGrid):
+    plt.figure(figsize=(15,8))
+    
+    cmap = plt.cm.rainbow
+    norm = matplotlib.colors.Normalize(vmin=0, vmax=nodes['probTot'].max())
+    
+    for tile in tiles.iterrows():
+        text_params = {'ha': 'center', 'va': 'center', 'family': 'sans-serif','fontweight': 'bold'}
+        text(tile[1]['coord'][0]-0.05,tile[1]['coord'][1]-0.05, tile[1]['num'],color=tile[1]['col'],size=13,**text_params)
+        [coordX,coordY,node_coord]=printHex(tile,lenGrid)
+        plt.plot(coordX,coordY,color='k')
+        
+    for node in nodes.iterrows():
+        if nodes['probTot'][node[0]]>0:
+            textProb=str(node[0])+'-'+str(round(100*nodes['probTot'][node[0]],1))+'\n'
+            if nodes['probTI'][node[0]]>0:
+                textProb=textProb+'TI:'+str(round(100*nodes['probTI'][node[0]],1))+'\n'
+            if nodes['probWO'][node[0]]>0:
+                textProb=textProb+'WO:'+str(round(100*nodes['probWO'][node[0]],1))+'\n'
+            if nodes['probST'][node[0]]>0:
+                textProb=textProb+'ST:'+str(round(100*nodes['probST'][node[0]],1))+'\n'
+            if nodes['probGR'][node[0]]>0:
+                textProb=textProb+'GR:'+str(round(100*nodes['probGR'][node[0]],1))+'\n'
+            if nodes['probCL'][node[0]]>0:
+                textProb=textProb+'CL:'+str(round(100*nodes['probCL'][node[0]],1))+'\n'
+            text(nodes['coordX'][node[0]],nodes['coordY'][node[0]],textProb,size=8, bbox=dict(facecolor=cmap(norm(nodes['probTot'][node[0]])), alpha=.9))
+
+    plt.show()

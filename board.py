@@ -10,10 +10,9 @@ from general import probDice,printHex
 import pandas as pd
 import numpy as np
 
-def tileCreation(output):
+def tileCreation(output,lenGrid):
 
     #Terrain tiles -------------------------------------------
-    lenGrid=0.5
     h=lenGrid/math.cos(math.radians(30))
         
     tile1={'col':'','res':'','num':'','prob':'','id':1,'coord':[1,-2*lenGrid-2*h*math.sin(math.radians(30))],'node_coord':[],'node_name':[11,10,9,1,2,3]}
@@ -45,7 +44,7 @@ def tileCreation(output):
     tileDF.index = tileDF['id']
     
     for tile in tileDF.iterrows():
-        [coordX,coordY,node_coord]=printHex(tile,lenGrid,h)
+        [coordX,coordY,node_coord]=printHex(tile,lenGrid)
         #Fill the node cordinate
         tileDF.loc[tile[1]['id'],'node_coord'] =node_coord
         #Fill the dice number in the tile
@@ -119,5 +118,6 @@ def tileCreation(output):
             nodeNum+=1
 
     nodes['conn']=connectNodes
+    nodes['probTot']=nodes[['probTI','probWO','probST','probGR','probCL']].sum(axis=1)
     return [tileDF,portsDF,nodes]
 

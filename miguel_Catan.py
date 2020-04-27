@@ -17,7 +17,7 @@ from pylab import figure, text
 #My libs
 from layerStructure import createNodeM,fillProbNodeM
 from board import tileCreation
-from general import plotID,plotMap,plotNodeProb
+from general import plotID,plotMap,plotNodeProb,plotMapStructure
 
 
 #Load credentials
@@ -58,6 +58,8 @@ lenGrid=0.5
 plotID(tiles,ports,nodes,lenGrid)
 #Plot Map
 plotMap(tiles,ports,nodes,lenGrid)
+
+plotMapStructure(tiles,ports,nodes,lenGrid,output)
 #Plot Prob Node Prob
 plotNodeProb(tiles,ports,nodes,lenGrid)
 
@@ -65,22 +67,8 @@ plotNodeProb(tiles,ports,nodes,lenGrid)
 probMon=nodes.sum(axis=0)
 print(probMon)
 
-def colorPlayer(playerID,output):
-    color=output['data']['cards'][str(playerID)]['color']
-    return color
-        
-def strucPrint(output,nodeDict):
 
-    for town in output['data']['towns']:
-        if output ['data']['towns'][str(town)]['level']==1:
-            plt.scatter(nodeDict[int(town)][0]+.03,nodeDict[int(town)][1]+0.05,color=colorPlayer(output ['data']['towns'][str(town)]['ownerId'],output),marker="o",s=80)
-        else:
-            plt.scatter(nodeDict[int(town)][0]+.03,nodeDict[int(town)][1]+0.05,color=colorPlayer(output ['data']['towns'][str(town)]['ownerId'],output),marker="D",s=80)
-    
-    for road in output['data']['roads']:
-        node1=output['data']['roads'][road]['node1']
-        node2=output['data']['roads'][road]['node2']
-        plt.plot([nodeDict[node1][0],nodeDict[node2][0]],[nodeDict[node1][1],nodeDict[node2][1]],color=colorPlayer(output ['data']['roads'][str(road)]['ownerId'],output),linewidth=4)
+        
 
 
     

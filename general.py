@@ -10,6 +10,10 @@ from pylab import figure, text
 import matplotlib.pyplot as plt
 import matplotlib.colors
 
+def colorPlayer(playerID,output):
+    color=output['data']['cards'][str(playerID)]['color']
+    return color
+
 def probDice(number):
     if number==2:
         prob=0.0278
@@ -78,8 +82,33 @@ def plotMap(tiles,ports,nodes,lenGrid):
         plt.scatter(port[1]['coord'][0],port[1]['coord'][1],color=port[1]['col'],s=100) 
         for i in range(2):
             plt.plot([port[1]['coord'][0],nodes['coordX'][port[1]['nodes'][i]]],[port[1]['coord'][1],nodes['coordY'][port[1]['nodes'][i]]],color=port[1]['col'])
-    
     plt.show()
+    
+def plotMapStructure(tiles,ports,nodes,lenGrid,output):
+    for tile in tiles.iterrows():
+        text_params = {'ha': 'center', 'va': 'center', 'family': 'sans-serif','fontweight': 'bold'}
+        text(tile[1]['coord'][0]-0.05,tile[1]['coord'][1]-0.05, tile[1]['num'],color=tile[1]['col'],size=13,**text_params)
+        [coordX,coordY,node_coord]=printHex(tile,lenGrid)
+        plt.plot(coordX,coordY,color='k')
+        
+    for port in ports.iterrows():
+        plt.scatter(port[1]['coord'][0],port[1]['coord'][1],color=port[1]['col'],s=100) 
+        for i in range(2):
+            plt.plot([port[1]['coord'][0],nodes['coordX'][port[1]['nodes'][i]]],[port[1]['coord'][1],nodes['coordY'][port[1]['nodes'][i]]],color=port[1]['col'])
+    
+    for town in output['data']['towns']:
+        if output ['data']['towns'][str(town)]['level']==1:
+            plt.scatter(nodes['coordX'][int(town)]+.03,nodes['coordY'][int(town)]+0.05,color=colorPlayer(output ['data']['towns'][str(town)]['ownerId'],output),marker="o",s=80)
+        else:
+            plt.scatter(nodes['coordX'][int(town)]+.03,nodes['coordY'][int(town)]+0.05,color=colorPlayer(output ['data']['towns'][str(town)]['ownerId'],output),marker="D",s=80)
+
+    for road in output['data']['roads']:
+        node1=output['data']['roads'][road]['node1']
+        node2=output['data']['roads'][road]['node2']
+        plt.plot([nodes['coordX'][node1],nodes['coordX'][node2]],[nodes['coordY'][node1],nodes['coordY'][node2]],color=colorPlayer(output ['data']['roads'][str(road)]['ownerId'],output),linewidth=4)
+
+    plt.show()
+    
     
 def plotNodeProb(tiles,ports,nodes,lenGrid):
     plt.figure(figsize=(15,8))

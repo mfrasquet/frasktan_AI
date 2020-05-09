@@ -119,5 +119,34 @@ def tileCreation(output,lenGrid):
 
     nodes['conn']=connectNodes
     nodes['probTot']=nodes[['probTI','probWO','probST','probGR','probCL']].sum(axis=1)
+    exchangeRate=[[4,4,4,4,4]]*54
+    
+    exchangeRate[2]=[4,2,4,4,4] #Brick Port
+    exchangeRate[3]=[4,2,4,4,4] #Brick Port
+    
+    exchangeRate[5]=[3,3,3,3,3] #Regular Port
+    exchangeRate[6]=[3,3,3,3,3] #Regular Port
+    
+    exchangeRate[25]=[3,3,3,3,3] #Regular Port
+    exchangeRate[15]=[3,3,3,3,3] #Regular Port 
+    
+    exchangeRate[46]=[4,4,2,4,4] #Wool Port
+    exchangeRate[36]=[4,4,2,4,4] #Wool Port
+    
+    exchangeRate[52]=[3,3,3,3,3] #Regular Port
+    exchangeRate[53]=[3,3,3,3,3] #Regular Port
+    
+    exchangeRate[49]=[4,4,4,2,4] #Ore Port
+    exchangeRate[50]=[4,4,4,2,4] #Ore Port
+    
+    exchangeRate[39]=[4,4,4,4,2] #Wheat Port
+    exchangeRate[38]=[4,4,4,4,2] #Wheat Port
+    
+    exchangeRate[27]=[3,3,3,3,3] #Regular Port
+    exchangeRate[16]=[3,3,3,3,3] #Regular Port
+    
+    
+    nodes['exchangeRate']=exchangeRate
+
     return [tileDF,portsDF,nodes]
 

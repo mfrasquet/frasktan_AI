@@ -46,9 +46,9 @@ resumeGame={"reqType":"resumeGame","username":username,"pwd":pwd}
 refresh={"reqType":"refresh","username":username,"pwd":pwd}
 
 #API call
-r = requests.post('http://juatan.cosasdejuan.es/juatanApi.php', json=refresh)
-r.status_code
-output=r.json()
+#r = requests.post('http://juatan.cosasdejuan.es/juatanApi.php', json=refresh)
+#r.status_code
+#output=r.json()
 
 #Create tiles, ports and nodes with info from game
 lenGrid=0.5
@@ -68,8 +68,49 @@ probMon=nodes.sum(axis=0)
 print(probMon)
 
 
-        
+#Winning posibility 1
+cities=1
+win={'TI':10.5,'CL':10.5,'WO':10,'ST':17,'GR':30} #Timber,Brick,Wool,Ore,Wheat
 
+pointsList=[]
+for i in range(1,len(nodes)+1):
+    if i==33:
+        d=4
+    cost=0
+    for res in win:
+        if res=='TI':
+            cost=cost+win[res]/(nodes['probTI'][i]+
+               nodes['probCL'][i]/nodes['exchangeRate'][i][1]+
+               nodes['probWO'][i]/nodes['exchangeRate'][i][2]+
+               nodes['probST'][i]/nodes['exchangeRate'][i][3]+
+               nodes['probGR'][i]/nodes['exchangeRate'][i][4])
+        if res=='CL':
+            cost=cost+win[res]/(nodes['probCL'][i]+
+               nodes['probTI'][i]/nodes['exchangeRate'][i][0]+
+               nodes['probWO'][i]/nodes['exchangeRate'][i][2]+
+               nodes['probST'][i]/nodes['exchangeRate'][i][3]+
+               nodes['probGR'][i]/nodes['exchangeRate'][i][4])
+        if res=='WO':
+            cost=cost+win[res]/(nodes['probWO'][i]+
+               nodes['probCL'][i]/nodes['exchangeRate'][i][1]+
+               nodes['probTI'][i]/nodes['exchangeRate'][i][0]+
+               nodes['probST'][i]/nodes['exchangeRate'][i][3]+
+               nodes['probGR'][i]/nodes['exchangeRate'][i][4])
+        if res=='ST':
+            cost=cost+win[res]/(nodes['probST'][i]+
+               nodes['probCL'][i]/nodes['exchangeRate'][i][1]+
+               nodes['probWO'][i]/nodes['exchangeRate'][i][2]+
+               nodes['probTI'][i]/nodes['exchangeRate'][i][0]+
+               nodes['probGR'][i]/nodes['exchangeRate'][i][4])
+        if res=='GR':
+            cost=cost+win[res]/(nodes['probGR'][i]+
+               nodes['probCL'][i]/nodes['exchangeRate'][i][1]+
+               nodes['probWO'][i]/nodes['exchangeRate'][i][2]+
+               nodes['probST'][i]/nodes['exchangeRate'][i][3]+
+               nodes['probTI'][i]/nodes['exchangeRate'][i][0])
 
+    pointsList.append(cost)
+    
+            
     
 

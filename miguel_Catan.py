@@ -21,7 +21,7 @@ from general import plotID,plotMap,plotNodeProb,plotMapStructure
 
 
 #Load credentials
-credentials=pd.read_csv('../credentials.csv')
+credentials=pd.read_csv('credentials.csv')
 username=credentials['username'][0]
 pwd=credentials['pwd'][0]
 
